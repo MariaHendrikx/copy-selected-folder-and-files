@@ -1,0 +1,70 @@
+{
+  "name": "file-copy-to-clipboard",
+  "displayName": "File Copy to Clipboard",
+  "publisher": "MariaHendrikx", 
+  "description": "A VS Code extension to copy selected file(s) or folder contents to your clipboard, including file paths as comments.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.96.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MariaHendrikx/copy-selected-folder-and-files.git"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:file-copy-to-clipboard.copyFiles"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "file-copy-to-clipboard.copyFromExplorer",
+        "title": "Copy from Explorer Selection"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "file-copy-to-clipboard.copyFromExplorer",
+          "when": "explorerResourceIsFolder || resourceFilename",
+          "group": "navigation"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "file-copy-to-clipboard.copyFromExplorer",
+      "key": "ctrl+shift+1",
+      "when": "explorerViewletVisible && !inputFocus"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "webpack",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "npm run compile-tests && npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.96.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@typescript-eslint/eslint-plugin": "^8.17.0",
+    "@typescript-eslint/parser": "^8.17.0",
+    "eslint": "^9.16.0",
+    "typescript": "^5.7.2",
+    "ts-loader": "^9.5.1",
+    "webpack": "^5.95.0",
+    "webpack-cli": "^5.1.4",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.4.1"
+  }
+}
