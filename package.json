@@ -3,7 +3,7 @@
   "displayName": "File Copy to Clipboard",
   "publisher": "MariaHendrikx", 
   "description": "A VS Code extension to copy selected file(s) or folder contents to your clipboard, including file paths as comments.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.96.0"
   },
