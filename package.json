@@ -3,9 +3,30 @@
   "displayName": "File Copy to Clipboard",
   "publisher": "MariaHendrikx", 
   "description": "A VS Code extension to copy selected file(s) or folder contents to your clipboard, including file paths as comments.",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.96.0"
+  },
+  "properties": {
+    "fileCopyToClipboard.excludeGlobs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [
+        "**/*.png",
+        "**/*.jpg",
+        "**/*.jpeg",
+        "**/*.gif",
+        "**/*.svg",
+        "**/*.ico",
+        "**/*.webp",
+        "**/*.pyc",
+        "**/__pycache__/**",
+        "**/node_modules/**"
+      ],
+      "description": "Glob patterns for files to exclude from being copied to clipboard."
+    }
   },
   "repository": {
     "type": "git",
