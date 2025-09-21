@@ -9,17 +9,26 @@ const ALWAYS_EXCLUDED = [
     '**/node_modules/**'
 ];
 
-// Image extensions that should never be in‑lined. Instead we insert a
+// Binary file extensions that should never be in‑lined. Instead we insert a
 // lightweight placeholder so the clipboard is never flooded with binary
 // data.
-const IMAGE_EXTENSIONS = new Set([
-    '.png',
-    '.jpg',
-    '.jpeg',
-    '.gif',
-    '.svg',
-    '.ico',
-    '.webp'
+const BINARY_EXTENSIONS = new Set([
+    // Images
+    '.png', '.jpg', '.jpeg', '.gif', '.svg', '.ico', '.webp', '.bmp', '.tiff', '.tif',
+    // Videos
+    '.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm', '.mkv', '.m4v',
+    // Audio
+    '.mp3', '.wav', '.flac', '.aac', '.ogg', '.wma', '.m4a',
+    // Archives
+    '.zip', '.rar', '.7z', '.tar', '.gz', '.bz2', '.xz',
+    // Executables
+    '.exe', '.dll', '.so', '.dylib', '.bin',
+    // Documents (binary formats)
+    '.pdf', '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx',
+    // Other binary formats
+    '.db', '.sqlite', '.sqlite3', '.mdb', '.accdb',
+    '.psd', '.ai', '.sketch', '.fig',
+    '.iso', '.img', '.dmg', '.pkg', '.deb', '.rpm'
 ]);
 
 /** Combine the hard‑coded exclusions with anything the user added */
@@ -27,8 +36,8 @@ function mergeExcludes(userExcludes: string[] | undefined): string[] {
     return [...new Set([...ALWAYS_EXCLUDED, ...(userExcludes ?? [])])];
 }
 
-function isImage(filePath: string): boolean {
-    return IMAGE_EXTENSIONS.has(path.extname(filePath).toLowerCase());
+function isBinary(filePath: string): boolean {
+    return BINARY_EXTENSIONS.has(path.extname(filePath).toLowerCase());
 }
 
 /**
@@ -70,9 +79,7 @@ async function getAllFilesInFolder(dirPath: string, excludeGlobs: string[], root
     for (const entry of entries) {
         const fullPath = path.join(dirPath, entry.name);
         if (isExcluded(fullPath, excludeGlobs, rootDir)) {
-            // Skip both the folder itself and everything beneath it.
-            if (entry.isDirectory()) continue;
-            if (!entry.isDirectory()) continue;
+            continue;
         }
 
         if (entry.isDirectory()) {
@@ -107,7 +114,7 @@ async function getFilePathsFromUris(uris: vscode.Uri[]): Promise<string[]> {
     return [...new Set(allFiles)];
 }
 
-/** Format a single file (or image placeholder) for the clipboard. */
+/** Format a single file (or binary file placeholder) for the clipboard. */
 async function readFileContent(filePath: string): Promise<string> {
     const commentPrefix = '//';
 
@@ -118,9 +125,9 @@ async function readFileContent(filePath: string): Promise<string> {
         relativePath = path.relative(workspaceFolder.uri.fsPath, filePath);
     }
 
-    // For binary/image assets we only want a short stub.
-    if (isImage(filePath)) {
-        return `${commentPrefix} Image: ${relativePath}`;
+    // For binary files we only want a short stub.
+    if (isBinary(filePath)) {
+        return `${commentPrefix} Binary file: ${relativePath}`;
     }
 
     // Text file → read content.
